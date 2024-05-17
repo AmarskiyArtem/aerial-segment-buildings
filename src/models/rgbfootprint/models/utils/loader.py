@@ -2,18 +2,12 @@ import os
 import torch
 from models.deeplab.modeling.sync_batchnorm.replicate import patch_replication_callback
 
-def load_model(model, resume_dataset=None, best_miou=False, is_cuda=False, gpu_ids=None):
+def load_model(model, checkpoint_path, is_cuda=False, gpu_ids=0):
     # Load state_dict, if any
-    model_checkpoint = None
-    if resume_dataset is not None:
-        checkpoint_name = "best_miou_checkpoint.pth.tar" if best_miou else "best_loss_checkpoint.pth.tar" 
-        checkpoint_path = os.path.join("weights", resume_dataset, checkpoint_name)
-        print("Resuming from {}".format(checkpoint_path))
-
-        if is_cuda:
-            model_checkpoint = torch.load(checkpoint_path)
-        else:
-            model_checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
+    if is_cuda:
+        model_checkpoint = torch.load(checkpoint_path)
+    else:
+        model_checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
 
     # Load model onto GPUs
     if is_cuda:
