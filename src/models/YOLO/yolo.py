@@ -19,3 +19,6 @@ class YOLO:
             mask = torch.any(masks, dim=0).squeeze()
             output_masks[i] = mask
         return output_masks
+    
+    def eval(self):
+        self.model.eval()

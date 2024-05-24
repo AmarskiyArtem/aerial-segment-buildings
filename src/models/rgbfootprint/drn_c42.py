@@ -21,3 +21,6 @@ class DRN_c42():
 
     def forward(self, images):
         return self.model(images)
+    
+    def eval(self):
+        self.model.eval()

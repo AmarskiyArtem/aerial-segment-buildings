@@ -26,3 +26,6 @@ class SAM:
             mask = torch.any(masks, dim=0).squeeze()
             output_masks[i] = mask
         return output_masks
+    
+    def eval():
+        pass
