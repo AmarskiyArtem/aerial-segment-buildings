@@ -3,7 +3,7 @@ import math
 import torch.utils.model_zoo as model_zoo
 
 
-from models.deeplab.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
+from src.models.rgbfootprint.models.deeplab.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
 webroot = 'http://dl.yf.io/drn/'
 

@@ -1,6 +1,5 @@
-import os
 import torch
-from models.deeplab.modeling.sync_batchnorm.replicate import patch_replication_callback
+from src.models.rgbfootprint.models.deeplab.modeling.sync_batchnorm.replicate import patch_replication_callback
 
 def load_model(model, checkpoint_path, is_cuda=False, gpu_ids=0):
     # Load state_dict, if any

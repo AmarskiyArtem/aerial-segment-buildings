@@ -1,12 +1,12 @@
-from utils import get_bboxes_from_mask
-
 from pathlib import Path
 from torch.utils.data import Dataset
 
+import torchvision.transforms as tt
 import torch
 import cv2
 
-class YOLO_dataset(Dataset):
+
+class RGBfootprint_dataset(Dataset):
     def __init__(self, data_dir):
         self.data_dir = Path(data_dir)
         self.images = sorted(list(self.data_dir.glob("images/*.png")))
@@ -18,13 +18,12 @@ class YOLO_dataset(Dataset):
     def __getitem__(self, idx):
         image = cv2.imread(str(self.images[idx]), cv2.IMREAD_COLOR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (640, 640))
-        image = image / 255.0
-        image = torch.tensor(image).permute(2, 0, 1)
+        image = cv2.resize(image, (224, 224))
+        image = tt.functional.to_tensor(image)
         
         mask = cv2.imread(str(self.masks[idx]), cv2.IMREAD_COLOR)
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-        mask = cv2.resize(mask, (640, 640))
-        mask = torch.tensor(mask)
+        mask = cv2.resize(mask, (224, 224))
+        mask = tt.functional.to_tensor(mask)
 
         return image, mask
