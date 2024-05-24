@@ -1,5 +1,14 @@
 import numpy as np
 
+def calculate_metrics(pred, real):
+    iou_score = iou(pred, real)
+    dice = dice_coefficient(pred, real)
+    p = precision(pred, real)
+    r = recall(pred, real)
+    f1 = f1_score(pred, real)
+    return iou_score, dice, p, r, f1
+
+
 def iou(pred, real):
     intersection = np.logical_and(pred, real)
     union = np.logical_or(pred, real)

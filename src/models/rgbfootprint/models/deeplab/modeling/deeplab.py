@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from src.models.rgbfootprint.models.deeplab.modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
