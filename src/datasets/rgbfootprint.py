@@ -2,9 +2,8 @@ from pathlib import Path
 from torch.utils.data import Dataset
 
 import torchvision.transforms as tt
-import torch
 import cv2
-
+import torch
 
 class RGBfootprint_dataset(Dataset):
     def __init__(self, data_dir):
@@ -24,6 +23,6 @@ class RGBfootprint_dataset(Dataset):
         mask = cv2.imread(str(self.masks[idx]), cv2.IMREAD_COLOR)
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
         mask = cv2.resize(mask, (224, 224))
-        mask = tt.functional.to_tensor(mask)
+        mask = torch.tensor(mask)
 
         return image, mask

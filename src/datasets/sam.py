@@ -1,4 +1,4 @@
-from utils import get_bboxes_from_mask
+from src.datasets.utils import get_bboxes_from_mask
 
 from pathlib import Path
 from torch.utils.data import Dataset

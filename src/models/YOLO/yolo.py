@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import numpy as np
 import torch
 
-class YOLO:
+class YOLOseg:
     def __init__(self, checkpoint_path, device):
         self.device = device
         self.model = YOLO(checkpoint_path).to(device)
@@ -21,4 +21,4 @@ class YOLO:
         return output_masks
     
     def eval(self):
-        self.model.eval()
+        pass
