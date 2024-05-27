@@ -1,5 +1,5 @@
 from src.models.rgbfootprint.drn_c42 import DRN_c42
-#from src.models.SAM.sam import SAM
+from src.models.SAM.sam import SAM
 from src.models.YOLO.yolo import YOLOseg
 
 from src.datasets.sam import SAM_dataset, SAM_collate_fn
@@ -10,6 +10,8 @@ from torch.utils.data import DataLoader
 
 from src.utils.evaluator import Evaluator
 
+from argparse import ArgumentParser
+
 def eval(model_name, checkpoint_path, device, data_dir, batch_size, model_type=None):
     model_name = model_name.lower()
     if model_name == 'drn_c42':
@@ -18,7 +20,7 @@ def eval(model_name, checkpoint_path, device, data_dir, batch_size, model_type=N
     elif model_name == 'sam':
         if model_type is None:
             raise ValueError('model_type must be provided for SAM model')
-        #model = SAM(model_type, checkpoint_path, device)
+        model = SAM(model_type, checkpoint_path, device)
         dataset = SAM_dataset(data_dir)
     elif model_name == 'yolo':
         model = YOLOseg(checkpoint_path, device)
@@ -34,12 +36,17 @@ def eval(model_name, checkpoint_path, device, data_dir, batch_size, model_type=N
     metrics = evaluator.evaluate()
     return metrics
 
-model_name = 'drn_c42'
-model_name = 'yolo'
-checkpoint_path = '/home/qq/programming/skoltech/best_miou_checkpoint.pth.tar'
-checkpoint_path = '../yolo/best.pt'
-device = 'cpu'
-data_dir = '../final_train/train_val/val'
-batch_size = 2
 
-print(eval(model_name, checkpoint_path, device, data_dir, batch_size))
+def main():
+    parser = ArgumentParser()
+    parser.add_argument('--model_name', type=str, required=True)
+    parser.add_argument('--checkpoint_path', type=str, required=True)
+    parser.add_argument('--device', type=str, required=True)
+    parser.add_argument('--data_dir', type=str, required=True)
+    parser.add_argument('--batch_size', type=int, default=20)
+    parser.add_argument('--model_type', type=str, default=None, help='Model type for SAM model')
+    args = parser.parse_args()
+    return eval(args.model_name, args.checkpoint_path, args.device, args.data_dir, args.batch_size, args.model_type)
+
+if __name__ == '__main__':
+    print(main())
