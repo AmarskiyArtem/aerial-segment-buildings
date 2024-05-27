@@ -23,6 +23,7 @@ class RGBfootprint_dataset(Dataset):
         mask = cv2.imread(str(self.masks[idx]), cv2.IMREAD_COLOR)
         mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
         mask = cv2.resize(mask, (224, 224))
-        mask = torch.tensor(mask)
+        _, mask = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
+        mask = tt.functional.to_tensor(mask)
 
         return image, mask

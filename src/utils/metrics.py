@@ -39,4 +39,4 @@ def recall(pred, real):
 def f1_score(pred, real):
     p = precision(pred, real)
     r = recall(pred, real)
-    return 2 * p * r / (p + r)
+    return 2 * p * r / (p + r + 1e-5)

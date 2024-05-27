@@ -26,9 +26,9 @@ class Evaluator:
                     output = self.model(images)
 
             for i in range(len(output)):
-                dataset_len += 1
                 pred = output[i].cpu().numpy()
                 real = mask[i].cpu().numpy()
+                dataset_len += 1
                 iou, dice, precision, recall, f1 = calculate_metrics(pred, real)
                 metrics['iou'] += iou
                 metrics['dice'] += dice

@@ -35,9 +35,11 @@ def eval(model_name, checkpoint_path, device, data_dir, batch_size, model_type=N
     return metrics
 
 model_name = 'drn_c42'
-checkpoint_path = '../best_miou_checkpoint2.pth.tar'
+model_name = 'yolo'
+checkpoint_path = '/home/qq/programming/skoltech/best_miou_checkpoint.pth.tar'
+checkpoint_path = '../yolo/best.pt'
 device = 'cpu'
-data_dir = '../yolo/mini'
+data_dir = '../final_train/train_val/val'
 batch_size = 2
 
 print(eval(model_name, checkpoint_path, device, data_dir, batch_size))

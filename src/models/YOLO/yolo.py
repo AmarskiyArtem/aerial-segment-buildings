@@ -15,8 +15,11 @@ class YOLOseg:
         outputs = self.model(images)
         output_masks = [0] * images.shape[0]
         for i in range(len(outputs)):
-            masks = outputs[i].masks.data
-            mask = torch.any(masks, dim=0).squeeze()
+            if outputs[i].masks:
+                masks = outputs[i].masks.data
+                mask = torch.any(masks, dim=0).squeeze()
+            else:
+                mask = torch.zeros(images.shape[2], images.shape[3])
             output_masks[i] = mask
         return output_masks
     
