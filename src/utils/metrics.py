@@ -33,7 +33,10 @@ def precision(pred, real):
 def recall(pred, real):
     intersection = np.logical_and(pred, real)
     if np.sum(real) == 0:
-        return 1
+        if np.sum(pred) == 0:
+            return 1
+        else:
+            return 0
     return np.sum(intersection) / np.sum(real)
 
 def f1_score(pred, real):
