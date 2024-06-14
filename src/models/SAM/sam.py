@@ -14,7 +14,9 @@ class SAM:
     def forward(self, images, bboxes):
         output_masks = [0] * len(images)
         for i in range(len(images)):
-            self.predictor.set_image(images[i])
+            if len(bboxes) == 0:
+                output_masks[i] = torch.zeros_like(images[i])
+            self.predictor.set_image(images[i].to(self.device))
             boxes = self.predictor.transform.apply_boxes_torch(bboxes[i], images[i].shape[:2]).to(self.device)
             masks, _, _ = self.predictor.predict_torch(
                 point_coords=None,

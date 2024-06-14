@@ -16,8 +16,8 @@ class Evaluator:
         for data in self.loader:
             if self.isSAM:
                 images, mask, bboxes = data
-                images = images.to(self.device)
-                bboxes = bboxes.to(self.device)
+                images = images
+                bboxes = bboxes
                 output = self.model(images, bboxes)
             else:
                 images, mask = data

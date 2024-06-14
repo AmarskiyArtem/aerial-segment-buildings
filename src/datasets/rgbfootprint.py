@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 
 import torchvision.transforms as tt
 import cv2
-import torch
 
 class RGBfootprint_dataset(Dataset):
     def __init__(self, data_dir):

@@ -8,7 +8,7 @@ import cv2
 class SAM_dataset(Dataset):
     def __init__(self, data_dir):
         self.data_dir = Path(data_dir)
-        self.images = sorted(list(self.data_dir.glob("images/*.jpg")))
+        self.images = sorted(list(self.data_dir.glob("images/*.png")))
         self.masks = sorted(list(self.data_dir.glob("masks/*.png")))
     
     def __len__(self):
@@ -23,7 +23,7 @@ class SAM_dataset(Dataset):
         
         bboxes = get_bboxes_from_mask(mask)
 
-        return image, mask, bboxes
+        return image, mask / 255, bboxes
     
 def SAM_collate_fn(batch):
     images = [item[0] for item in batch]
