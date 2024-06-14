@@ -2,11 +2,10 @@ import numpy as np
 
 def calculate_metrics(pred, real):
     iou_score = iou(pred, real)
-    dice = dice_coefficient(pred, real)
     p = precision(pred, real)
     r = recall(pred, real)
     f1 = f1_score(pred, real)
-    return iou_score, dice, p, r, f1
+    return iou_score, p, r, f1
 
 def iou(pred, real):
     intersection = np.logical_and(pred, real)
@@ -15,12 +14,6 @@ def iou(pred, real):
         return 1
     iou_score = np.sum(intersection) / np.sum(union)
     return iou_score
-
-def dice_coefficient(pred, real):
-    intersection = np.logical_and(pred, real)
-    if np.sum(pred) + np.sum(real) == 0:
-        return 1
-    return 2. * np.sum(intersection) / (np.sum(pred) + np.sum(real))
 
 def precision(pred, real):
     intersection = np.logical_and(pred, real)

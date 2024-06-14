@@ -29,9 +29,8 @@ class Evaluator:
                 pred = output[i].cpu().numpy()
                 real = mask[i].cpu().numpy()
                 dataset_len += 1
-                iou, dice, precision, recall, f1 = calculate_metrics(pred, real)
+                iou, precision, recall, f1 = calculate_metrics(pred, real)
                 metrics['iou'] += iou
-                metrics['dice'] += dice
                 metrics['precision'] += precision
                 metrics['recall'] += recall
                 metrics['f1'] += f1
