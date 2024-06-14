@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
+
 class SegmentationLosses(object):
     def __init__(self, beta=1, weight=None, cuda=False):
         self.weight = weight
@@ -13,21 +14,21 @@ class SegmentationLosses(object):
         self.cuda = cuda
         self.verbose = True
 
-    def build_loss(self, mode='ce'):
+    def build_loss(self, mode="ce"):
         print("Using {} loss with {} beta".format(mode, self.beta))
 
-        if mode == 'ce':
+        if mode == "ce":
             return self.CrossEntropyLoss
-        elif mode == 'ce_dice':
+        elif mode == "ce_dice":
             return self.CE_DICELoss
-        elif mode == 'wce_dice':
+        elif mode == "wce_dice":
             return self.WCE_DICELoss
         else:
             raise NotImplementedError
 
     def CrossEntropyLoss(self, logit, target):
         n, c, h, w = logit.size()
-    
+
         logit = logit.permute(0, 2, 3, 1).reshape(-1, c)
         target = target.reshape(-1)
 
@@ -39,24 +40,30 @@ class SegmentationLosses(object):
         n, c, h, w = logit.size()
         # Calculate log probabilities
         logits_log_softmax = F.log_softmax(logit, dim=1).float()
-        logits_log_probs = logits_log_softmax.gather(dim=1, index=target.view(n, 1, h, w).long()) #n, 1, h, w
+        logits_log_probs = logits_log_softmax.gather(
+            dim=1, index=target.view(n, 1, h, w).long()
+        )  # n, 1, h, w
 
         # Multiply by exp(weights) [ weights on scale of 0-1, but taking exponent gives 1-e]
         if weights is None:
             weights = torch.zeros_like(logits_log_probs)
         else:
-            weights = weights.unsqueeze(1) # weights arrive as n, h, w
+            weights = weights.unsqueeze(1)  # weights arrive as n, h, w
 
-        weights_exp = torch.exp(weights) ** 2 # [0 - 1] --> [1 e**3=20]
+        weights_exp = torch.exp(weights) ** 2  # [0 - 1] --> [1 e**3=20]
         # print(torch.unique(weights_exp))
         assert weights_exp.size() == logits_log_probs.size()
         logits_weighted_log_probs = (logits_log_probs * weights_exp).view(n, -1)
 
         # Rescale the weights so loss is in approximately the same interval (distribution of weights may have a lot of variance)
-        weighted_loss = logits_weighted_log_probs.sum(1) / weights_exp.view(n, -1).sum(1)
+        weighted_loss = logits_weighted_log_probs.sum(1) / weights_exp.view(n, -1).sum(
+            1
+        )
 
         # Return mini-batch mean
-        return -1 * weighted_loss.mean() # log probs are negative for incorrect predictions and 0 for perfect. need to minimize not maximize
+        return (
+            -1 * weighted_loss.mean()
+        )  # log probs are negative for incorrect predictions and 0 for perfect. need to minimize not maximize
 
     # https://github.com/kevinzakka/pytorch-goodies/blob/master/losses.py
     def DICELoss(self, logit, target, eps=1e-7):
@@ -77,20 +84,18 @@ class SegmentationLosses(object):
         denominator = logit + encoded_target
 
         denominator = (self.beta**2) * denominator.sum(0).sum(1).sum(1) + eps
-        loss_per_channel = (1 - (numerator / denominator))
+        loss_per_channel = 1 - (numerator / denominator)
 
         return loss_per_channel.sum() / logit.size(1)
 
     def CE_DICELoss(self, logit, target):
         cross_entropy = self.CrossEntropyLoss(logit, target)
         dice_loss = self.DICELoss(F.log_softmax(logit, dim=1), target)
-        
-        return self.weight[0]*cross_entropy + self.weight[1]*dice_loss
+
+        return self.weight[0] * cross_entropy + self.weight[1] * dice_loss
 
     def WCE_DICELoss(self, logit, target, weight=None):
         wce = self.CrossEntropyLoss_Manual(logit, target, weight)
         dice_loss = self.DICELoss(F.log_softmax(logit, dim=1), target)
 
-        return self.weight[0]*wce + self.weight[1]*dice_loss
-
-
+        return self.weight[0] * wce + self.weight[1] * dice_loss
