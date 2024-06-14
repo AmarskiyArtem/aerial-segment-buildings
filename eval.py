@@ -42,13 +42,24 @@ def eval(model_name, checkpoint_path, device, data_dir, batch_size, model_type=N
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--model_name", type=str, required=True)
-    parser.add_argument("--checkpoint_path", type=str, required=True)
-    parser.add_argument("--device", type=str, required=True)
-    parser.add_argument("--data_dir", type=str, required=True)
-    parser.add_argument("--batch_size", type=int, default=20)
     parser.add_argument(
-        "--model_type", type=str, default=None, help="Model type for SAM model"
+        "--model_name", type=str, required=True, choices=["sam", "drn_c42", "yolo"]
+    )
+    parser.add_argument(
+        "--checkpoint_path", type=str, required=True, help="Path to model checkpoint"
+    )
+    parser.add_argument("--device", type=str, required=True, help="cuda or cpu")
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="the path to the directory with images. Should contains images/ and masks/ dirs",
+    )
+    parser.add_argument(
+        "--batch_size", type=int, default=20, help="batch size (default 20)"
+    )
+    parser.add_argument(
+        "--model_type", type=str, default=None, help="model type for SAM model"
     )
     args = parser.parse_args()
     return eval(
